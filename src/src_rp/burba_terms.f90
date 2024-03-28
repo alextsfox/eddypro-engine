@@ -158,8 +158,8 @@ subroutine BurbaTerms()
 
     !> U-depedent parameters
     if (Umean /= 0d0 .and. Umean /= error) then
-        delta_bot  = 0.004d0  * dsqrt(l_bot / Umean) + 0.004d0
-        delta_top  = 0.0028d0 * dsqrt(l_top / Umean) + 0.00025d0 / Umean + 0.0045d0
+        delta_bot  = 0.004d0  * dsqrt(l_bot / Umean)
+        delta_top  = 0.0028d0 * dsqrt(l_top / Umean) + 0.00025d0 / Umean
         delta_spar = 0.0058d0 * dsqrt(l_spar / Umean)
     else
         delta_bot  = error
@@ -167,11 +167,11 @@ subroutine BurbaTerms()
         delta_spar = error
     endif
 
-    !> Sensible heat fluxes from sensor surfaces (Burba et al. 2008, GCB; Nobel (1983))
+    !> Sensible heat fluxes from sensor surfaces (Frank and Massman 2020, AFM; Nobel (1983))
     !> Bottom
     if (delta_bot /= 0d0 .and. delta_bot /= error &
         .and.  k_air /= error .and. deT_bot /= error) then
-        Burba%h_bot  = k_air * deT_bot / delta_bot
+        Burba%h_bot  = 0.108d0 * k_air * deT_bot / delta_bot
     else
         Burba%h_bot  = 0d0
     end if
@@ -179,7 +179,7 @@ subroutine BurbaTerms()
     !> Top
     if (delta_top /= 0d0 .and. delta_top /= error &
         .and.  k_air /= error .and. deT_top /= error) then
-        Burba%h_top  = k_air * deT_top * (r_top + delta_top) &
+        Burba%h_top  = 0.035d0 * k_air * deT_top * (r_top + delta_top) &
                           / (delta_top * r_top)
     else
         Burba%h_top  = 0d0
@@ -188,7 +188,7 @@ subroutine BurbaTerms()
     !> Spars
     if (delta_spar /= error .and. k_air /= error &
         .and. deT_spar /= error) then
-        Burba%h_spar = 0.15d0 * k_air * deT_spar &
+        Burba%h_spar = 0.225d0 * k_air * deT_spar &
                           / (r_spar * dlog((r_spar + delta_spar) / r_spar))
     else
         Burba%h_spar  = 0d0
